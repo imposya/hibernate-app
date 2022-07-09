@@ -20,10 +20,14 @@ public class App
         try {
             session.beginTransaction();
 
-            Person person = session.get(Person.class, 1);
+            Person person1 = new Person("Sasha", 25);
+            Person person2 = new Person("Masha", 21);
+            Person person3 = new Person("Antosha", 26);
 
-            System.out.println(person.getName());
-            System.out.println(person.getAge());
+            session.save(person1);
+            session.save(person2);
+            session.save(person3);
+
             session.getTransaction().commit();
         }
         finally {
