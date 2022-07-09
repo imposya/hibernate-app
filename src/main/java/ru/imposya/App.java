@@ -6,6 +6,8 @@ import org.hibernate.cfg.Configuration;
 import ru.imposya.model.Item;
 import ru.imposya.model.Person;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -24,12 +26,12 @@ public class App
         try {
             session.beginTransaction();
 
-            Person person = session.get(Person.class, 3);
-            System.out.println(person);
-            List<Item> items = person.getItems();
-            for (Item item : items) {
-                System.out.println(item.getItemName());
-            }
+            Person person = new Person("Roman", 44);
+            Item item = new Item("Hibernate2", person);
+            person.setItems(new ArrayList<Item>(Collections.singletonList(item)));
+
+            session.save(person);
+            session.save(item);
 
             session.getTransaction().commit();
         }
