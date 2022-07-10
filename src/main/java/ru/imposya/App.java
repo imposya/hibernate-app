@@ -28,12 +28,12 @@ public class App
         try (sessionFactory) {
             Session session = sessionFactory.getCurrentSession();
             session.beginTransaction();
-            Movie movie = new Movie("Movie2", 1999);
-            Actor actor = session.get(Actor.class, 1);
-            movie.setActors(new ArrayList<>(List.of(actor)));
-            actor.getMovies().add(movie);
-            session.save(movie);
 
+            Actor actor = session.get(Actor.class, 2);
+            System.out.println(actor.getMovies());
+            Movie movieToRemove = actor.getMovies().get(0);
+            actor.getMovies().remove(0);
+            movieToRemove.getActors().remove(actor);
 
             session.getTransaction().commit();
         }
