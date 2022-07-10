@@ -26,11 +26,14 @@ public class App
         try {
             session.beginTransaction();
 
-            Person person = session.get(Person.class, 4);
-            Item item = session.get(Item.class, 4);
-            item.getOwner().getItems().remove(item);
-            item.setOwner(person);
-            person.getItems().add(item);
+            Person person = new Person("Test cascading", 23);
+            Item item1 = new Item("Factitem1");
+            Item item2 = new Item("Factitem2");
+            Item item3 = new Item("Factitem3");
+            person.addItem(item1);
+            person.addItem(item2);
+            person.addItem(item3);
+            session.save(person);
 
             session.getTransaction().commit();
         }
