@@ -3,8 +3,7 @@ package ru.imposya;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import ru.imposya.model.Item;
-import ru.imposya.model.Person;
+import ru.imposya.model.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,26 +18,32 @@ public class App
     public static void main( String[] args )
     {
         Configuration configuration = new Configuration().addAnnotatedClass(Person.class)
-                .addAnnotatedClass(Item.class);
+                .addAnnotatedClass(Item.class)
+                .addAnnotatedClass(Passport.class)
+                .addAnnotatedClass(Actor.class)
+                .addAnnotatedClass(Movie.class);
 
         SessionFactory sessionFactory = configuration.buildSessionFactory();
-        Session session = sessionFactory.getCurrentSession();
-        try {
+
+        try (sessionFactory) {
+            Session session = sessionFactory.getCurrentSession();
             session.beginTransaction();
 
-            Person person = new Person("Test cascading", 23);
-            Item item1 = new Item("Factitem1");
-            Item item2 = new Item("Factitem2");
-            Item item3 = new Item("Factitem3");
-            person.addItem(item1);
-            person.addItem(item2);
-            person.addItem(item3);
-            session.save(person);
+            Movie movie = new Movie("Pulp fiction", 1994);
+            Actor actor1 = new Actor("Actor 1", 80);
+            Actor actor2 = new Actor("Actor 2", 99);
+
+            movie.setActors(new ArrayList<>(List.of(actor1, actor2)));
+
+            actor1.setMovies(new ArrayList<>(Collections.singletonList(movie)));
+            actor2.setMovies(new ArrayList<>(Collections.singletonList(movie)));
+
+            session.save(movie);
+            session.save(actor1);
+            session.save(actor2);
 
             session.getTransaction().commit();
         }
-        finally {
-            sessionFactory.close();
-        }
+
     }
 }
